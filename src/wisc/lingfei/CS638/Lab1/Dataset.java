@@ -87,7 +87,7 @@ public class DataSet {
         for(int f_index = 0; f_index < _features.length; f_index ++) {
             Feature f = _features[f_index];
 
-            System.out.println("Feature " + f.name + ":");
+            System.out.println("Feature '" + f.name + "'");
 
             int[][] cnt = new int[_labels.name.length][f.values.length];
             for(DataEntry d : _data) {
@@ -96,8 +96,7 @@ public class DataSet {
 
             for(int l_index = 0; l_index < 2; l_index ++) {
                 for(int fVal_index = 0; fVal_index < f.values.length; fVal_index ++) {
-                    System.out.println(_labels.name[l_index] + " and " + f.values[fVal_index]);
-                    System.out.println(cnt[l_index][fVal_index]);
+                    System.out.println("\t"+cnt[l_index][fVal_index]*100/_sampleNum+"% " + f.values[fVal_index] +" " + _labels.name[l_index]);
                 }
             }
         }
@@ -121,8 +120,6 @@ public class DataSet {
                 Feature newFeature = new Feature(featureName, featureVal);
                 _features[i] = newFeature;
             }
-
-            System.out.println("hello");
 
             _labels = new Labels(readLine(br), readLine(br));
 
