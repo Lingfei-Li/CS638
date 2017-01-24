@@ -14,17 +14,22 @@ public class Perceptron {
     private double biasWeight;
     private List<Double> weight;
     private double stepLen;
+    private boolean earlyStop = false;
 
     Perceptron(int inputNum, double stepLen) {
         Random rand = new Random();
         this.inputNum = inputNum;
-//        this.stepLen = stepLen;
-        this.stepLen = 0.01;
+        this.stepLen = stepLen;
         weight = new ArrayList<>();
         for(int i = 0; i < inputNum; i ++) {
             weight.add(rand.nextDouble() - 0.5);
         }
         biasWeight = rand.nextDouble() - 0.5;
+    }
+
+    Perceptron(int inputNum, double stepLen, boolean earlyStop) {
+        this(inputNum, stepLen);
+        this.earlyStop = earlyStop;
     }
 
     public double train(DataSet trainSet, DataSet tuneSet) {
@@ -41,24 +46,26 @@ public class Perceptron {
             for(int i = 0; i < trainSet._sampleNum; i ++) {
                 int sampleIndex = shuffledIndex.get(i);
                 DataEntry data = trainSet._data.get(sampleIndex);
-                int out = getOutput(data);
-                int teacher = data.labelIndex;
-//                System.out.println(trainSet._labels.name[out] + " - " + trainSet._labels.name[teacher]);
-                if(teacher == out) {
+
+                double out = getOutput(data);
+                double teacher = (double)data.labelIndex;
+
+                backProp(out, data);
+
+                if(teacher == MathUtil.getLabelIndex(out)) {
                     epochTrainAcc ++;
                 }
-                backProp(out, data);
             }
             epochTrainAcc /= trainSet._sampleNum;
             trainAcc = epochTrainAcc;
 
+            //Prevent overfitting with tuning set early stopping
             double epochTuneAcc = this.test(tuneSet);
-            if(tuneAcc != 0.0 && epochTuneAcc < tuneAcc) {
-//                break;
+            if(tuneAcc != 0.0 && epochTuneAcc < tuneAcc && this.earlyStop) {
+                break;
             }
             tuneAcc = epochTuneAcc;
 
-//            System.out.println(MathUtil.formatPercentage(epochTrainAcc) + " - " + MathUtil.formatPercentage(epochTuneAcc));
         }
         return trainAcc;
     }
@@ -72,17 +79,18 @@ public class Perceptron {
         return net;
     }
 
-    public int getOutput(DataEntry data) {
-        return MathUtil.stepFunc(getNet(data));
+    public double getOutput(DataEntry data) {
+//        return MathUtil.stepFunc(getNet(data));
+        return MathUtil.sigmoid(getNet(data));
     }
 
-    private void backProp(int out, DataEntry data) {
-        int teacher = data.labelIndex;
+    private void backProp(double out, DataEntry data) {
+        double teacher = (double)data.labelIndex;
         for(int j = 0; j < this.inputNum; j ++) {
-            double delta = stepLen * (double)(teacher - out) * (double)data.featureIndex[j];
+            double delta = stepLen * (teacher - out) * MathUtil.sigmoidDeriv(out) * (double)data.featureIndex[j];
             this.weight.set(j, this.weight.get(j) + delta);
         }
-        double delta = stepLen * (double)(teacher - out) * bias;
+        double delta = stepLen * (teacher - out) * bias;
         biasWeight += delta;
     }
 
@@ -91,15 +99,14 @@ public class Perceptron {
         double acc = 0.0;
         for(int i = 0; i < ds._sampleNum; i ++) {
             DataEntry data = ds._data.get(i);
-            int out = getOutput(data);
+            double out = getOutput(data);
             int teacher = data.labelIndex;
-            if(teacher == out) {
+
+            if(teacher == MathUtil.getLabelIndex(out)) {
                 acc ++;
             }
         }
         acc /= ds._sampleNum;
         return acc;
     }
-
-
 }

@@ -41,7 +41,7 @@ public class Ensemble {
             int teacher = data.labelIndex;
             int out = 0;
             for(Perceptron p : this.perceptrons) {
-                out += p.getOutput(data);
+                out += MathUtil.getLabelIndex(p.getOutput(data));
             }
             if(out > this.ensembleSize/2) {
                 out = 1;
