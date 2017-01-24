@@ -6,59 +6,18 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 
 public class DataSet {
+    public int _featureNum = 0;
+    public Feature[] _features;
+    public Labels _labels;
+    public int _sampleNum = 0;
+    public List<DataEntry> _data = new ArrayList<>();
 
-
-    private class Labels {
-        private String[] name;
-        HashMap<String, Integer> nameIndex;
-
-        Labels(String label1, String label2) {
-            this.name = new String[]{label1, label2};
-            this.nameIndex = new HashMap<>();
-            for(int i = 0; i < name.length; i ++) {
-                nameIndex.put(name[i], i);
-            }
-        }
+    DataSet(String filename) {
+        this.loadData(filename);
     }
-
-    private class Feature {
-        private String name;
-        private String[] values;
-        HashMap<String, Integer> valueIndex;
-
-        Feature(String name, String[] values) {
-            this.name = name;
-            this.values = values;
-            this.valueIndex = new HashMap<>();
-            for(int i = 0; i < values.length; i ++) {
-                valueIndex.put(values[i], i);
-            }
-        }
-    }
-
-    private class DataEntry {
-        private String name;
-        private int labelIndex;
-        private int[] featureIndex;
-        DataEntry(String name, String labelName, String[] featureNames) {
-            this.name = name;
-            this.labelIndex = _labels.nameIndex.get(labelName);
-            this.featureIndex = new int[featureNames.length];
-            for(int i = 0; i < featureNames.length; i ++) {
-                this.featureIndex[i] = _features[i].valueIndex.get(featureNames[i]);
-            }
-        }
-    }
-
-    private int _featureNum = -1;
-    private Feature[] _features;
-    private Labels _labels;
-    private int _sampleNum = -1;
-    private List<DataEntry> _data = new ArrayList<>();
 
     /**
      *
@@ -96,7 +55,8 @@ public class DataSet {
 
             for(int l_index = 0; l_index < 2; l_index ++) {
                 for(int fVal_index = 0; fVal_index < f.values.length; fVal_index ++) {
-                    System.out.println("\t"+cnt[l_index][fVal_index]*100/_sampleNum+"% " + f.values[fVal_index] +" " + _labels.name[l_index]);
+                    double perc = (double)cnt[l_index][fVal_index]/_sampleNum;
+                    System.out.println("\t"+ MathUtil.formatPercentage(perc) + " " + f.values[fVal_index] +" " + _labels.name[l_index]);
                 }
             }
         }
@@ -132,7 +92,7 @@ public class DataSet {
                     throw new IllegalArgumentException("Sample data entry doesn't have the required format");
                 }
 
-                DataEntry d = new DataEntry(dataEntryStr[0], dataEntryStr[1], Arrays.copyOfRange(dataEntryStr, 2, dataEntryStr.length));
+                DataEntry d = new DataEntry(dataEntryStr[0], dataEntryStr[1], Arrays.copyOfRange(dataEntryStr, 2, dataEntryStr.length), _labels, _features);
                 _data.add(d);
             }
 
@@ -141,20 +101,5 @@ public class DataSet {
             System.out.println(ex);
         }
 
-        this.printData();
-
-    }
-
-    public static void main(String[] args) {
-        String file;
-        if(args.length == 0) {
-            file = "titanic-fatalities.data";
-        }
-        else {
-            file = args[0];
-        }
-
-        DataSet ds = new DataSet();
-        ds.loadData(file);
     }
 }
