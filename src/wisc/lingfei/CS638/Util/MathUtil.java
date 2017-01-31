@@ -1,4 +1,4 @@
-package wisc.lingfei.CS638.Lab1;
+package wisc.lingfei.CS638.Util;
 
 import java.util.*;
 
@@ -7,6 +7,7 @@ import java.util.*;
  */
 public class MathUtil {
 
+    private static Random rand = new Random();
 
     public static int stepFunc(double input) {
         if(input >= 0.0) {
@@ -16,7 +17,7 @@ public class MathUtil {
     }
 
     public static double sigmoid(double t) {
-        return 1.0/(1+Math.exp(-t));
+        return 1.0/(1.0+Math.exp(-t));
     }
 
     public static double sigmoidDeriv(double sigmoidVal) {
@@ -56,6 +57,18 @@ public class MathUtil {
             }
         }
         return ans;
+    }
+
+    public static double getRandWeight() {
+        return rand.nextDouble() - 0.5;
+    }
+
+    public static void main(String[] args) {
+        for(int i = 0; i < 10000; i ++) {
+            System.out.println(i);
+            System.out.println(sigmoid(i));
+            System.out.println(sigmoid(-i));
+        }
     }
 
 

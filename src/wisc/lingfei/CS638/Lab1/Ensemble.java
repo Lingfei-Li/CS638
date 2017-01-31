@@ -1,5 +1,9 @@
 package wisc.lingfei.CS638.Lab1;
 
+import wisc.lingfei.CS638.Data.DataEntry;
+import wisc.lingfei.CS638.Data.DataSet;
+import wisc.lingfei.CS638.Util.MathUtil;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,7 +19,7 @@ public class Ensemble {
     private List<Perceptron> perceptrons;
     private int ensembleSize;
 
-    Ensemble(DataSet trainSet, DataSet tuneSet, DataSet testSet, int n) {
+    public Ensemble(DataSet trainSet, DataSet tuneSet, DataSet testSet, int n) {
         this.trainSet = trainSet;
         this.tuneSet = tuneSet;
         this.testSet = testSet;

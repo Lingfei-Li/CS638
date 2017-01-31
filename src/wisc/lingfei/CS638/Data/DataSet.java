@@ -1,5 +1,7 @@
-package wisc.lingfei.CS638.Lab1;
+package wisc.lingfei.CS638.Data;
 
+
+import wisc.lingfei.CS638.Util.MathUtil;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -15,7 +17,7 @@ public class DataSet {
     public int _sampleNum = 0;
     public List<DataEntry> _data = new ArrayList<>();
 
-    DataSet(String filename) {
+    public DataSet(String filename) {
         this.loadData(filename);
     }
 

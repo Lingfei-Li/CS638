@@ -1,4 +1,4 @@
-package wisc.lingfei.CS638.Lab1;
+package wisc.lingfei.CS638.Data;
 
 /**
  * Created by Lingfei on 2017-1-22.

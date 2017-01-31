@@ -1,5 +1,8 @@
 package wisc.lingfei.CS638.Lab1;
 
+import wisc.lingfei.CS638.Data.DataSet;
+import wisc.lingfei.CS638.Util.MathUtil;
+
 /**
  * Created by Lingfei on 2017-1-22.
  */
